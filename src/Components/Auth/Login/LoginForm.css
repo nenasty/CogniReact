@@ -311,11 +311,14 @@
 
 /* ===== Плашка ошибки входа (LoginForm.js) ===== */
 .loginform__error--enter {
+    display: block;
     width: 100%;
-    margin-bottom: 16px;
+    flex: 0 0 auto;
+    margin: 0 0 16px;
     padding: 12px 16px;
     font-family: Montserrat;
     font-size: 14px;
+    line-height: 1.4;
     text-align: center;
     background: #c04242;
     border-radius: 15px;

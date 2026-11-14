@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { ReactComponent as LogoSvg } from './img/logo.svg';
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Context } from '../../..';
 import './Header.css';
 import Placeholder from './img/placeholder.png';
@@ -12,7 +12,6 @@ function Header() {
   const location = useLocation();
 
   const [userImage, setUserImage] = useState(null);
-  const [onTest, setOnTest] = useState(false);
 
   const navigate = useNavigate();
 
@@ -52,10 +51,6 @@ function Header() {
 
   useEffect(() => {
 
-    if (location.pathname == '/test') {
-      setOnTest(true);
-    }
-    
     const userId = localStorage.getItem('userId');
 
     const fetchUserImage = async () => {
@@ -83,14 +78,12 @@ function Header() {
             </div>
           </div>
           <input onClick={(e) => toFriends(e.target.value)} onChange={(e) => search(e.target.value)} className='header__search' placeholder='Найти друга'></input>
-          {!onTest &&
           <button onClick={logout} className="header__logout">
             <div className="logout__button">
               <img src={userImage ? userImage : Placeholder} alt=" " className="logout__avatar"/>
               <span className="logout__text">выйти</span>
             </div>
           </button>
-          }
         </nav>
       </div>
     </header>
