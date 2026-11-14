@@ -154,10 +154,15 @@ function Test() {
                         <p className="sakinorva-progress">Страница {questPage} из {pageCount} · Выполнено {Object.keys(answers).length} из {questions.length}</p>
                     </div>
                     <div className="test__wrapper">
+                        <button type="button" aria-label="Вернуться в настройки" title="Вернуться в настройки" className="test__settings-back" onClick={() => navigate('/settings')}><Arrow /></button>
                         <ul className="test__pagination">
                             {Array.from({ length: pageCount }, (_, index) => {
                                 const page = index + 1;
-                                return <li key={page} className={'test__pagination-item ' + (questPage === page ? 'test__pagination-select' : '')} onClick={() => changePage(page)}>{page}</li>;
+                                const isCurrent = questPage === page;
+                                const start = index * QUESTIONS_PER_PAGE;
+                                const isComplete = questions.slice(start, start + QUESTIONS_PER_PAGE).every((question) => Number.isInteger(answers[question.id]));
+                                const classNames = ['test__pagination-item', isCurrent && 'test__pagination-select'].filter(Boolean).join(' ');
+                                return <li key={page}><button type="button" className={classNames} aria-current={isCurrent ? 'page' : undefined} disabled={!isCurrent && !isComplete} onClick={() => changePage(page)}>{page}</button></li>;
                             })}
                         </ul>
                         <button type="button" aria-label="Предыдущая страница" className={'test__button--page-prev' + (questPage > 1 ? ' test__button-show' : '')} onClick={() => changePage(-1, true)}><Arrow /></button>

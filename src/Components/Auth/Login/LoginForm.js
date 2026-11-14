@@ -93,8 +93,8 @@ function LoginForm() {
                               aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}>
                               {showPassword ? <EyeOffIcon fill="currentColor" /> : <EyeIcon fill="currentColor" />}
                           </button>
-                          {loginError && <span className='loginform__error--enter'><p>{loginError}</p></span>}
                       </div>
+                      {loginError && <p className='loginform__error--enter' role='alert'>{loginError}</p>}
                       <button type="submit" className='loginform__button'>Войти</button>
               <Link to="/register" className='loginform__link'>Зарегистрироваться</Link>
           </form>
