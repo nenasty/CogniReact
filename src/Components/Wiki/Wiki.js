@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import './Wiki.css';
 import { ReactComponent as CreateIcon } from './img/create_atricle.svg';
 import { useNavigate } from 'react-router-dom';
@@ -20,32 +20,27 @@ function Wiki() {
         navigate("/wiki/create");
       };
 
-    useEffect(() => {
-
-        const fetchArticles = async () => {
+    const fetchArticles = useCallback(async () => {
         setIsLoading(true);
+        setHasLoadError(false);
 
-
-          try {
+        try {
             const articlesDownload = await store.getArticles();
             if (!Array.isArray(articlesDownload)) {
-              throw new TypeError("Expected articles response to be an array");
+                throw new TypeError("Expected articles response to be an array");
             }
             setArticles(articlesDownload);
-          } catch (error) {
-              console.error("Failed to fetch articles:", error);
-              setHasLoadError(true);
-          } finally {
+        } catch (error) {
+            console.error("Failed to fetch articles:", error);
+            setHasLoadError(true);
+        } finally {
             setIsLoading(false);
         }
-        };
+    }, [store]);
 
+    useEffect(() => {
         fetchArticles();
-      }, [])
-
-      if (isLoading) {
-        return <></>;
-    }
+    }, [fetchArticles]);
 
     return (
         <div className="wiki">
@@ -54,13 +49,23 @@ function Wiki() {
                     <h1 className="wiki__heading">ВИКИ «Cogni» <span className="wiki__icon" onClick={(e) => toCreateArticle()}><CreateIcon/></span></h1>
                     <div className="wiki__posts">
                         <h2 className="wiki__posts--heading">Публикации</h2>
-                        <ul className="wiki__list">
+                        <ul className={`wiki__list${articles.length === 0 ? " wiki__list--empty" : ""}`}>
                             {articles.map(article => (
                                 <WikiMiniArticle key={article.idArticle} article={article}/>
                             ))}
                         </ul>
-                        {hasLoadError && <p className="wiki__empty">Не удалось загрузить публикации.</p>}
-                        {!hasLoadError && articles.length === 0 && <p className="wiki__empty">Пока нет публикаций.</p>}
+                        {isLoading && <p className="wiki__status" role="status">Загрузка публикаций...</p>}
+                        {hasLoadError && (
+                            <div className="wiki__status" role="alert">
+                                <p>Произошла техническая ошибка</p>
+                                <button className="wiki__retry" type="button" onClick={fetchArticles}>
+                                    Повторить запрос
+                                </button>
+                            </div>
+                        )}
+                        {!isLoading && !hasLoadError && articles.length === 0 && (
+                            <p className="wiki__status">Пока нет публикаций.</p>
+                        )}
                     </div>
                 </section>
 

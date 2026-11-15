@@ -234,7 +234,7 @@ export const createNewArticle = async (userId, articleName, articleBody, article
 }
 
 export const getAllArticles = async () => {
-    let response = await $api.get("Article/GetArticlesPreviews");
+    let response = await $api.get("Article/GetArticlesPreviews", { timeout: 10000 });
     return response;
 }
 
